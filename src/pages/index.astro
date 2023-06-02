@@ -1,10 +1,49 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import NavBar from '../components/NavBar.astro';
+import Card from '../components/Card.astro';
+import { FrappeApp } from 'frappe-js-sdk';
+
+const API_KEY = "cb4dd903fb94cdc";
+const API_SECRET = "e24ee2b62a316ca";
+
+const frappe = new FrappeApp("https://shunyanet.com", {
+  useToken: true,
+  // Pass a custom function that returns the token as a string - this could be fetched from LocalStorage or auth providers like Firebase, Auth0 etc.
+  token: () => getToken(),
+  
+  // This can be "Bearer" or "token"
+  type: "token",
+});
+
+// console.debug("api key", import.meta.env.API_KEY);
+
+function getToken() {
+//  
+return `${API_KEY}:${API_SECRET}`;
+}
+const auth = frappe.auth()
+auth
+  .getLoggedInUser()
+  .then((user) => console.log(`User ${user} is logged in.`))
+  .catch((error) => console.error(error));
+
+const user = auth.getLoggedInUser();
+
 
 ---
 
+
 <Layout title="Hello to Astro.">
-	<main>
-<h1 class=" text-4xl text-teal-200 bg-black"> Build with FZ</h1>
+
+	<NavBar />
+	
+	
+	<main class=' mx-10 my-10 text-center'>
+
+		<img src="../../../spin.png" alt="Astro Logo" class=" w-5 mx-auto animate-spin" />
+
+		<span class=" text-teal-700">Logged in User:</span><div class=" text-sm text-blue-400 animate-pulse">{user}</div> 
+    </section>
 	</main>
 </Layout>

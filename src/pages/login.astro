@@ -1,0 +1,79 @@
+---
+import NavBar from '../components/NavBar.astro';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+
+  <NavBar />
+
+  <section class="px-9 my-10">
+    <form id="login-form">
+   
+      <h3 class="font-semibold text-base mb-4">LOGIN HERE</h3>
+      <div class="flex flex-col space-y-4">
+        <input
+          class="focus:ring-2 focus:outline-none focus:ring-gray-500 text-gray-500 font-semibold text-lg py-6 pl-4 rounded-lg border-[3px] border-gray-400"
+          required
+          name="username"
+          type="text"
+          placeholder="Username"
+        />
+        <input
+          class="focus:ring-2 focus:outline-none focus:ring-gray-500 text-gray-500 font-semibold text-lg py-6 pl-4 rounded-lg border-[3px] border-gray-400"
+          required
+          name="password"
+          type="password"
+          placeholder="Your Password"
+        />
+      </div>
+
+      <button
+        class="flex flex-row items-center justify-center space-x-8 focus:outline-none focus:ring-4 focus:ring-green-800 mt-10 bg-green-900 text-green-100 px-[70px] py-4 rounded-full font-bold text-xl hover:bg-green-700 transition-colors"
+        type="submit">
+        <span>LOGIN</span>
+        <i class="ph-bold ph-arrow-right"></i>
+      </button>
+    </form>
+  </section>
+<script>
+  import { FrappeApp } from "frappe-js-sdk";
+
+  async function handleOnLogin(e) {
+ 
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+
+    const { username, password } = data;
+
+
+   
+
+    const frappe = new FrappeApp("https://shunyanet.com");
+
+    try {
+      const response = await frappe.auth().loginWithUsernamePassword({ 
+        //fetch form data as username and password
+        username: username,
+        password: password,
+
+      });
+
+      //after login redirect to home page
+      window.location.href = "/schedule";
+      //alert login success with logged in user name
+      alert(`Logged in as ${response.full_name}`);
+      console.log('Logged in');
+    } catch (error) {
+      console.error(error);
+      alert("Invalid username or password");
+    }
+  }
+
+  const loginForm = document.getElementById("login-form");
+  loginForm.addEventListener("submit", handleOnLogin);
+  
+</script>
+</Layout>
